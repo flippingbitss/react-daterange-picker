@@ -1,0 +1,29 @@
+{
+  "name": "react-daterange-picker",
+  "version": "1.0.0",
+  "description": "a react date range picker component ",
+  "author": "Manpreet Singh Matharu",
+  "main": "dist/index.ts",
+  "scripts": {
+    "build": "tsc",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "@material-design/core": "^0.9.1"
+  },
+  "devDependencies": {
+    "typescript": "^3.3.4"
+  },
+  "keywords": [
+    "react",
+    "component",
+    "react-components",
+    "date-range",
+    "date",
+    "range",
+    "picker",
+    "typescript",
+    "library"
+  ],
+  "license": "MIT"
+}
