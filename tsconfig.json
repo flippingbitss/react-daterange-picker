@@ -7,17 +7,16 @@
 		"outDir": "build",
 		"strict": true,
 		"esModuleInterop": true,
-		"allowJs": true,
 		"sourceMap": true,
 		"skipLibCheck": true,
 		"noImplicitAny": true,
 		"noImplicitThis": true,
-		"importHelpers": true,
 		"strictNullChecks": true,
 		"allowSyntheticDefaultImports": true,
 		"forceConsistentCasingInFileNames": true,
 		"suppressImplicitAnyIndexErrors": true,
-		"resolveJsonModule": true
+		"resolveJsonModule": true,
+		"jsx": "react"
 	},
 	"include": ["src"]
 }
