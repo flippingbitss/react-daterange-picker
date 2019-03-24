@@ -1,36 +1,42 @@
 {
-  "name": "@matharumanpreet00/react-daterange-picker",
-  "version": "1.0.0",
-  "description": "a react date range picker component ",
-  "author": "Manpreet Singh Matharu",
-  "main": "build/index.js",
-  "scripts": {
-    "start": "tsc --watch",
-    "build": "tsc",
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "dependencies": {
-    "@material-ui/core": "^3.9.2",
-    "@material-ui/icons": "^3.0.2",
-    "date-fns": "^1.30.1",
-    "react": "^16.8.4",
-    "react-dom": "^16.8.4"
-  },
-  "devDependencies": {
-    "@types/react": "^16.8.8",
-    "@types/react-dom": "^16.8.3",
-    "typescript": "^3.3.4"
-  },
-  "keywords": [
-    "react",
-    "component",
-    "react-components",
-    "date-range",
-    "date",
-    "range",
-    "picker",
-    "typescript",
-    "library"
-  ],
-  "license": "MIT"
+	"name": "@matharumanpreet00/react-daterange-picker",
+	"version": "1.0.0",
+	"description": "A react date range picker using Material Design",
+	"author": "Manpreet Singh Matharu",
+	"main": "build/index.js",
+	"scripts": {
+		"start": "tsc --watch",
+		"build": "tsc",
+		"test": "echo \"Error: no test specified\" && exit 1"
+	},
+	"dependencies": {
+		"@material-ui/core": "^3.9.2",
+		"@material-ui/icons": "^3.0.2",
+		"date-fns": "^1.30.1"
+	},
+	"devDependencies": {
+		"@types/react": "^16.8.8",
+		"@types/react-dom": "^16.8.3",
+		"typescript": "^3.3.4"
+	},
+	"peerDependencies": {
+		"@material-ui/core": "^3.9.2",
+		"react": "^16.8.4",
+		"react-dom": "^16.8.4"
+	},
+	"keywords": [
+		"react",
+		"component",
+		"react-components",
+		"date-range",
+		"date",
+		"range",
+		"picker",
+		"material-design",
+		"material",
+		"typescript",
+		"npm",
+		"package"
+	],
+	"license": "MIT"
 }
