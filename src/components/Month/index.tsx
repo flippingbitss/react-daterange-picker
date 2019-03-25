@@ -21,11 +21,14 @@ import {
 	addMonths,
 	isSameWeek,
 	isSameMonth,
-	isToday
+	isToday,
+	isSameDay,
+	isWithinRange,
+	isAfter
 } from "date-fns";
 import Header from "./components/Header";
-import clsx from "clsx";
-import { chunks, combine, switchVal } from "../../utils";
+import { chunks, combine } from "../../utils";
+import Day from "./components/Day";
 
 const WEEK_DAYS = ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"];
 
@@ -33,10 +36,15 @@ interface MonthProps extends WithStyles<typeof styles> {
 	initialDate?: Date;
 }
 
+interface DateRange {
+	startDate?: Date;
+	endDate?: Date;
+}
+
 const styles = (theme: Theme) =>
 	createStyles({
 		root: {
-			width: 320
+			width: 290
 		},
 		weekDaysContainer: {
 			marginTop: 10,
@@ -48,20 +56,16 @@ const styles = (theme: Theme) =>
 			paddingRight: 15,
 			marginTop: 15,
 			marginBottom: 20
-		},
-		dayButton: {
-			height: 36,
-			width: 36,
-			padding: 0
-		},
-		outlined: {
-			extend: 'dayButton',
-			border: `1px solid ${theme.palette.primary.dark}`
 		}
 	});
 
 const Month: React.FunctionComponent<MonthProps> = props => {
 	const [date, setDate] = React.useState(props.initialDate || new Date());
+	const [{ startDate, endDate }, setDateRange] = React.useState<DateRange>({
+		startDate: new Date(2019, 3, 5),
+		endDate: new Date(2019, 3, 18)
+	});
+	const [hoverDay, setHoverDay] = React.useState<Date>();
 
 	const monthStart = startOfMonth(date);
 	const monthEnd = endOfMonth(date);
@@ -74,7 +78,36 @@ const Month: React.FunctionComponent<MonthProps> = props => {
 		days.push(curr);
 		curr = addDays(curr, 1);
 	}
-	
+
+	const matchEnds = (day: Date) => {
+		return isStartofRange(day) || isEndofRange(day);
+	};
+
+	const isStartofRange = (day: Date) => startDate && isSameDay(day, startDate);
+	const isEndofRange = (day: Date) => endDate && isSameDay(day, endDate);
+
+	const inDateRange = (day: Date) => {
+		return startDate && endDate && isWithinRange(day, startDate, endDate);
+	};
+
+	const inHoverRange = (day: Date) => {
+		return (
+			startDate &&
+			!endDate &&
+			hoverDay &&
+			isAfter(hoverDay, startDate) &&
+			isWithinRange(day, startDate, hoverDay)
+		);
+	};
+
+	const handleClick = (day: Date) => {
+		if (startDate && !endDate && isAfter(day, startDate)) {
+			setDateRange({ startDate, endDate: day });
+		} else {
+			setDateRange({ startDate: day, endDate: undefined });
+		}
+	};
+
 	const { classes } = props;
 	return (
 		<Paper elevation={5} className={classes.root}>
@@ -101,21 +134,20 @@ const Month: React.FunctionComponent<MonthProps> = props => {
 					justify="space-between"
 					className={classes.daysContainer}>
 					{chunks(days, 7).map((week, idx) => (
-						<Grid key={idx} container direction="row" justify="space-around">
+						<Grid key={idx} container direction="row" justify="center">
 							{week.map((day, dayIdx) => (
-								<IconButton
+								<Day
 									key={dayIdx}
-									className={combine(classes.dayButton, isToday(day) && classes.outlined)}
-									disabled={!isSameMonth(date, day)}>
-									<Typography
-										style={{ width: 20 }}
-										align="center"
-										key={dayIdx}
-										color={isSameMonth(date, day) ? "default" : "textSecondary"}
-										variant="body2">
-										{getDate(day)}
-									</Typography>
-								</IconButton>
+									filled={matchEnds(day)}
+									outlined={isToday(day)}
+									highlighted={inDateRange(day) || inHoverRange(day)}
+									disabled={!isSameMonth(date, day)}
+									startOfRange={isStartofRange(day)}
+									endOfRange={isEndofRange(day)}
+									onClick={() => handleClick(day)}
+									onHover={() => setHoverDay(day)}
+									value={getDate(day)}
+								/>
 							))}
 						</Grid>
 					))}
