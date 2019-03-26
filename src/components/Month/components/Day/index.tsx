@@ -34,6 +34,9 @@ const styles = (theme: Theme) =>
 			width: 36,
 			padding: 0
 		},
+		buttonText: {
+			lineHeight: 1.6
+		},
 		outlined: {
 			border: `1px solid ${theme.palette.primary.dark}`
 		},
@@ -72,7 +75,7 @@ const Day: React.FunctionComponent<DayProps> = props => {
 				onMouseOver={props.onHover}>
 				<Typography
 					color={!props.disabled ? "default" : "textSecondary"}
-					className={combine(!props.disabled && props.filled && classes.contrast)}
+					className={combine(classes.buttonText, !props.disabled && props.filled && classes.contrast)}
 					variant="body2">
 					{props.value}
 				</Typography>
