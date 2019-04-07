@@ -7,7 +7,7 @@ import {
 	WithStyles,
 	withStyles
 } from "@material-ui/core";
-import { combine } from "../../../../utils";
+import { combine } from "../utils";
 
 interface DayProps extends WithStyles<typeof styles> {
 	filled?: boolean;

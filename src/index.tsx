@@ -139,6 +139,20 @@ const DateRangePickerImpl: React.FunctionComponent<DateRangePickerProps> = props
 		}
 	};
 
+	const setFirstMonthValidated = (date: Date) => {
+		if(isBefore(date, secondMonth)) {
+			setFirstMonth(date)
+		}
+	}
+
+	const setSecondMonthValidated = (date: Date) => {
+		if(isAfter(date, firstMonth)) {
+			setSecondMonth(date)
+		}
+	}
+
+
+
 	const functions = {
 		inHoverRange,
 		inDateRange,
@@ -178,12 +192,14 @@ const DateRangePickerImpl: React.FunctionComponent<DateRangePickerProps> = props
 						<Grid container direction="row" justify="center">
 							<Month
 								value={firstMonth}
+								setDate={setFirstMonthValidated}
 								functions={functions}
 								marker={MARKERS.FIRST_MONTH}
 							/>
 							<div className={classes.divider} />
 							<Month
 								value={secondMonth}
+								setDate={setSecondMonthValidated}
 								marker={MARKERS.SECOND_MONTH}
 								functions={functions}
 							/>

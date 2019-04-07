@@ -9,10 +9,10 @@ import {
 	withStyles
 } from "@material-ui/core";
 import { getDate, isSameMonth, isToday, addMonths } from "date-fns";
-import { chunks } from "../../utils";
-import Header from "./components/Header";
-import Day from "./components/Day";
-import { NavigationAction, Setter } from "../../types";
+import { chunks } from "../utils";
+import Header from "./Header";
+import Day from "./Day";
+import { NavigationAction, Setter } from "../types";
 
 const WEEK_DAYS = ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"];
 
@@ -37,6 +37,7 @@ const styles = (theme: Theme) =>
 interface MonthProps extends WithStyles<typeof styles> {
 	value: Date;
 	marker: symbol;
+	setDate: (date: Date) => void;
 	functions: {
 		getDaysInMonth: (date: Date) => ReadonlyArray<Date>;
 		inHoverRange: (date: Date) => boolean;
@@ -52,13 +53,14 @@ interface MonthProps extends WithStyles<typeof styles> {
 }
 
 const Month: React.FunctionComponent<MonthProps> = props => {
-	const { classes, functions: fns, value: date, marker } = props;
+	const { classes, functions: fns, value: date, marker, setDate } = props;
 	const [back, forward] = fns.canNavigate(marker);
 	return (
 		<Paper square elevation={0} className={classes.root}>
 			<Grid container>
 				<Header
 					date={date}
+					setDate={setDate}
 					nextDisabled={!forward}
 					prevDisabled={!back}
 					onClickPrevious={() => fns.onNavigate(marker, NavigationAction.Previous)}
