@@ -7,12 +7,15 @@ import {
 	IconButton
 } from "@material-ui/core";
 import React from "react";
-import { ChevronLeft, ChevronRight } from "@material-ui/icons";
-import { format, addMonths } from "date-fns";
+import { ChevronLeft, ChevronRight, FastRewind } from "@material-ui/icons";
+import { format, addMonths, isSameDay, isSameMonth } from "date-fns";
 
 interface HeaderProps extends WithStyles<typeof styles> {
 	date: Date;
-	onChange: (date: Date) => void;
+	nextDisabled: boolean;
+	prevDisabled: boolean;
+	onClickNext: () => void;
+	onClickPrevious: () => void;
 }
 
 const styles = createStyles({
@@ -27,27 +30,35 @@ const styles = createStyles({
 	}
 });
 
-const Header: React.FunctionComponent<HeaderProps> = ({ date, classes, onChange }) => {
-	const handleNext = () => onChange(addMonths(date, 1));
-	const handlePrev = () => onChange(addMonths(date, -1));
-
-	return (
-		<Grid container justify="space-between" alignItems="center">
-			<Grid item className={classes.iconContainer}>
-				<IconButton className={classes.icon} onClick={handlePrev}>
-					<ChevronLeft color="action" />
-				</IconButton>
-			</Grid>
-			<Grid item>
-				<Typography>{format(date, "MMMM YYYY")}</Typography>
-			</Grid>
-			<Grid item className={classes.iconContainer}>
-				<IconButton className={classes.icon} onClick={handleNext}>
-					<ChevronRight color="action" />
-				</IconButton>
-			</Grid>
+const Header: React.FunctionComponent<HeaderProps> = ({
+	date,
+	classes,
+	nextDisabled,
+	prevDisabled,
+	onClickNext,
+	onClickPrevious
+}) => (
+	<Grid container justify="space-between" alignItems="center">
+		<Grid item className={classes.iconContainer}>
+			<IconButton className={classes.icon} disabled={prevDisabled} onClick={onClickPrevious}>
+				<ChevronLeft color={prevDisabled ? "disabled" : "action"} />
+			</IconButton>
 		</Grid>
-	);
-};
+		<Grid item>
+			<Typography>{format(date, "MMMM YYYY")}</Typography>
+		</Grid>
+		<Grid item className={classes.iconContainer}>
+			<IconButton className={classes.icon} disabled={nextDisabled} onClick={onClickNext}>
+				<ChevronRight color={nextDisabled ? "disabled" : "action"} />
+			</IconButton>
+		</Grid>
+	</Grid>
+);
 
-export default withStyles(styles)(Header);
+export default withStyles(styles)(
+	React.memo(Header, (prev, next) => {
+		return isSameMonth(prev.date, next.date) &&
+			prev.nextDisabled == next.nextDisabled &&
+			prev.prevDisabled == next.prevDisabled;
+	})
+);

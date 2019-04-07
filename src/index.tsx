@@ -1,5 +1,20 @@
 import * as React from "react";
-import { MuiThemeProvider, createMuiTheme, CssBaseline, Grid, Paper, Typography, createStyles, WithStyles, withStyles, Divider, Theme } from "@material-ui/core";
+import {
+	MuiThemeProvider,
+	createMuiTheme,
+	CssBaseline,
+	Grid,
+	Paper,
+	Typography,
+	createStyles,
+	WithStyles,
+	withStyles,
+	Divider,
+	Theme,
+	ListItem,
+	ListItemText,
+	List
+} from "@material-ui/core";
 import {
 	addMonths,
 	isSameDay,
@@ -11,41 +26,52 @@ import {
 	endOfMonth,
 	isBefore,
 	addDays,
-	format
+	format,
+	isSameMonth,
+	differenceInCalendarMonths,
+	getDate
 } from "date-fns";
 import Month from "./components/Month";
 import { ArrowRightAlt } from "@material-ui/icons";
+import { DateRange, NavigationAction, Setter as StateSetter } from "./types";
 
 const theme = createMuiTheme({ typography: { useNextVariants: true } });
+type Marker = symbol;
 
-const styles = (theme: Theme) => createStyles({
-	header: {
-		padding: "20px 70px"
-	},
-	headerItem: {
-		flex: 1
-	},
-	divider: {
-		borderLeft: `1px solid ${theme.palette.action.hover}`,
-		marginBottom: 20
-	}
-})
+const MARKERS: { [key: string]: Marker } = {
+	FIRST_MONTH: Symbol("firstMonth"),
+	SECOND_MONTH: Symbol("secondMonth")
+};
 
-
+const styles = (theme: Theme) =>
+	createStyles({
+		header: {
+			padding: "20px 70px"
+		},
+		headerItem: {
+			flex: 1
+		},
+		divider: {
+			borderLeft: `1px solid ${theme.palette.action.hover}`,
+			marginBottom: 20
+		}
+	});
 
 interface DateRangePickerProps extends WithStyles<typeof styles> {
 	title: string;
 	dateRange?: DateRange;
 }
 
-interface DateRange {
-	startDate?: Date;
-	endDate?: Date;
-}
-
 const DateRangePickerImpl: React.FunctionComponent<DateRangePickerProps> = props => {
 	const [dateRange, setDateRange] = React.useState<DateRange>({ ...props.dateRange });
 	const [hoverDay, setHoverDay] = React.useState<Date>();
+	const [firstMonth, setFirstMonth] = React.useState<Date>(
+		(props.dateRange && props.dateRange.startDate) || new Date()
+	);
+	const [secondMonth, setSecondMonth] = React.useState<Date>(
+		(props.dateRange && props.dateRange.endDate) || addMonths(firstMonth, 1)
+	);
+
 	const { startDate, endDate } = dateRange;
 	const { classes } = props;
 
@@ -83,6 +109,36 @@ const DateRangePickerImpl: React.FunctionComponent<DateRangePickerProps> = props
 		}
 	};
 
+	const onNavigate = (marker: Marker, action: NavigationAction) => {
+		console.log("onNavigate", action, marker);
+		if (marker == MARKERS.FIRST_MONTH) {
+			const firstNew = addMonths(firstMonth, action);
+			if (isBefore(firstNew, secondMonth)) setFirstMonth(firstNew);
+		} else {
+			const secondNew = addMonths(secondMonth, action);
+			if (isBefore(firstMonth, secondNew)) setSecondMonth(secondNew);
+		}
+	};
+
+	const onHover = (date: Date) => {
+		if (startDate && !endDate) {
+			if(!hoverDay || !isSameDay(date, hoverDay)) {
+				console.log("setHoverDay", getDate(date))
+				setHoverDay(date)
+			}
+		}
+	};
+
+	const canNavigate = (marker: Marker): [boolean, boolean] => {
+		let canNavigateCloser = differenceInCalendarMonths(secondMonth, firstMonth) >= 2;
+
+		if (marker == MARKERS.FIRST_MONTH) {
+			return [true, canNavigateCloser];
+		} else {
+			return [canNavigateCloser, true];
+		}
+	};
+
 	const functions = {
 		inHoverRange,
 		inDateRange,
@@ -90,37 +146,63 @@ const DateRangePickerImpl: React.FunctionComponent<DateRangePickerProps> = props
 		isEndOfRange,
 		matchEnds,
 		getDaysInMonth,
-		setHoverDay,
+		onHover,
+		onNavigate,
+		canNavigate,
 		handleClick
 	};
-
-
-	const dateFirst = new Date();
-	const dateSecond = addMonths(dateFirst, 1);
 
 	return (
 		<MuiThemeProvider theme={theme}>
 			<CssBaseline />
 
-			<Grid direction="column">
-				<Paper elevation={0} square>
-					<Grid container className={classes.header} alignItems="center" >
-						<Grid item className={classes.headerItem}><Typography variant="subheading">{startDate ? format(startDate, "MMMM DD, YYYY") : "Start Date"}</Typography></Grid>
-						<Grid item className={classes.headerItem}><ArrowRightAlt color="action"/></Grid>
-						<Grid item className={classes.headerItem}><Typography variant="subheading">{endDate ? format(endDate, "MMMM DD, YYYY") : "End Date"}</Typography></Grid>
+			<Paper elevation={5} square>
+				<Grid container direction="row">
+					<Grid>
+						<Grid container className={classes.header} alignItems="center">
+							<Grid item className={classes.headerItem}>
+								<Typography variant="subtitle1">
+									{startDate ? format(startDate, "MMMM DD, YYYY") : "Start Date"}
+								</Typography>
+							</Grid>
+							<Grid item className={classes.headerItem}>
+								<ArrowRightAlt color="action" />
+							</Grid>
+							<Grid item className={classes.headerItem}>
+								<Typography variant="subtitle1">
+									{endDate ? format(endDate, "MMMM DD, YYYY") : "End Date"}
+								</Typography>
+							</Grid>
+						</Grid>
+						<Divider />
+						<Grid container direction="row" justify="center">
+							<Month
+								value={firstMonth}
+								functions={functions}
+								marker={MARKERS.FIRST_MONTH}
+							/>
+							<div className={classes.divider} />
+							<Month
+								value={secondMonth}
+								marker={MARKERS.SECOND_MONTH}
+								functions={functions}
+							/>
+						</Grid>
 					</Grid>
-				
-				<Grid container direction="row" justify="center">
-					<Month initialDate={dateFirst} functions={functions} />
-					<div className={classes.divider}></div>
-					<Month initialDate={dateSecond} functions={functions} />
+					<div className={classes.divider} />
+					<Grid>
+						<List>
+							<ListItem button>
+								<ListItemText>Today</ListItemText>
+							</ListItem>
+						</List>
+					</Grid>
 				</Grid>
-				</Paper>
-			</Grid>
+			</Paper>
 		</MuiThemeProvider>
 	);
 
 	//return (<Typography>Hello blahblas {props.title}</Typography>);
 };
 
-export const DateRangePicker = withStyles(styles)(DateRangePickerImpl)
+export const DateRangePicker = withStyles(styles)(DateRangePickerImpl);

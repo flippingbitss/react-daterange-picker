@@ -8,31 +8,13 @@ import {
 	WithStyles,
 	withStyles
 } from "@material-ui/core";
-import { getDate, isSameMonth, isToday } from "date-fns";
-import Header from "./components/Header";
+import { getDate, isSameMonth, isToday, addMonths } from "date-fns";
 import { chunks } from "../../utils";
+import Header from "./components/Header";
 import Day from "./components/Day";
+import { NavigationAction, Setter } from "../../types";
 
 const WEEK_DAYS = ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"];
-
-interface MonthProps extends WithStyles<typeof styles> {
-	initialDate?: Date;
-	functions: {
-		inHoverRange: (date: Date) => boolean;
-		inDateRange: (date: Date) => boolean;
-		isStartOfRange: (date: Date) => boolean;
-		isEndOfRange: (date: Date) => boolean;
-		matchEnds: (date: Date) => boolean;
-		setHoverDay: React.Dispatch<React.SetStateAction<Date | undefined>>;
-		getDaysInMonth: (date: Date) => ReadonlyArray<Date>;
-		handleClick: (date: Date) => void;
-	};
-}
-
-interface DateRange {
-	startDate?: Date;
-	endDate?: Date;
-}
 
 const styles = (theme: Theme) =>
 	createStyles({
@@ -52,13 +34,36 @@ const styles = (theme: Theme) =>
 		}
 	});
 
+interface MonthProps extends WithStyles<typeof styles> {
+	value: Date;
+	marker: symbol;
+	functions: {
+		getDaysInMonth: (date: Date) => ReadonlyArray<Date>;
+		inHoverRange: (date: Date) => boolean;
+		inDateRange: (date: Date) => boolean;
+		isStartOfRange: (date: Date) => boolean;
+		isEndOfRange: (date: Date) => boolean;
+		matchEnds: (date: Date) => boolean;
+		onNavigate: (marker: symbol, action: NavigationAction) => void;
+		canNavigate: (marker: symbol) => [boolean, boolean]
+		handleClick: (date: Date) => void;
+		onHover: (date: Date) => void;
+	};
+}
+
 const Month: React.FunctionComponent<MonthProps> = props => {
-	const [date, setDate] = React.useState(props.initialDate || new Date());
-	const { classes, functions: fns } = props;
+	const { classes, functions: fns, value: date, marker } = props;
+	const [back, forward] = fns.canNavigate(marker);
 	return (
 		<Paper square elevation={0} className={classes.root}>
 			<Grid container>
-				<Header date={date} onChange={setDate} />
+				<Header
+					date={date}
+					nextDisabled={!forward}
+					prevDisabled={!back}
+					onClickPrevious={() => fns.onNavigate(marker, NavigationAction.Previous)}
+					onClickNext={() => fns.onNavigate(marker, NavigationAction.Next)}
+				/>
 
 				<Grid
 					item
@@ -91,7 +96,7 @@ const Month: React.FunctionComponent<MonthProps> = props => {
 									startOfRange={fns.isStartOfRange(day)}
 									endOfRange={fns.isEndOfRange(day)}
 									onClick={() => fns.handleClick(day)}
-									onHover={() => fns.setHoverDay(day)}
+									onHover={() => fns.onHover(day)}
 									value={getDate(day)}
 								/>
 							))}

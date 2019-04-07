@@ -16,8 +16,8 @@ interface DayProps extends WithStyles<typeof styles> {
 	disabled?: boolean;
 	startOfRange?: boolean;
 	endOfRange?: boolean;
-	onClick?: (event: React.MouseEvent<HTMLElement, MouseEvent>) => void;
-	onHover?: (event: React.MouseEvent<HTMLElement, MouseEvent>) => void;
+	onClick?: () => void;
+	onHover?: () => void;
 	value: number | string;
 }
 
@@ -56,6 +56,9 @@ const styles = (theme: Theme) =>
 
 const Day: React.FunctionComponent<DayProps> = props => {
 	const { classes } = props;
+
+
+
 	return (
 		<div
 			className={combine(
@@ -69,13 +72,15 @@ const Day: React.FunctionComponent<DayProps> = props => {
 					!props.disabled && props.outlined && classes.outlined,
 					!props.disabled && props.filled && classes.filled
 				)}
-				
 				disabled={props.disabled}
 				onClick={props.onClick}
 				onMouseOver={props.onHover}>
 				<Typography
 					color={!props.disabled ? "default" : "textSecondary"}
-					className={combine(classes.buttonText, !props.disabled && props.filled && classes.contrast)}
+					className={combine(
+						classes.buttonText,
+						!props.disabled && props.filled && classes.contrast
+					)}
 					variant="body2">
 					{props.value}
 				</Typography>
@@ -84,4 +89,16 @@ const Day: React.FunctionComponent<DayProps> = props => {
 	);
 };
 
-export default withStyles(styles)(Day);
+export default withStyles(styles)(
+	React.memo(Day, (prev, next) => {
+		return (
+			prev.filled == next.filled &&
+			prev.highlighted == next.highlighted &&
+			prev.filled == next.filled &&
+			prev.disabled == next.disabled &&
+			prev.startOfRange == next.startOfRange &&
+			prev.endOfRange == next.endOfRange &&
+			prev.value == next.value
+		);
+	})
+);
