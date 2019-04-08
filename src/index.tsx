@@ -29,11 +29,13 @@ import {
 	format,
 	isSameMonth,
 	differenceInCalendarMonths,
-	getDate
+	getDate,
+	addWeeks
 } from "date-fns";
 import Month from "./components/Month";
 import { ArrowRightAlt } from "@material-ui/icons";
-import { DateRange, NavigationAction, Setter as StateSetter } from "./types";
+import { DateRange, NavigationAction, Setter as StateSetter, DefinedRange } from "./types";
+import DefinedRanges from "./components/DefinedRanges";
 
 const theme = createMuiTheme({ typography: { useNextVariants: true } });
 type Marker = symbol;
@@ -57,8 +59,42 @@ const styles = (theme: Theme) =>
 		}
 	});
 
+const getRanges = (date: Date): DefinedRange[] => [
+	{
+		label: "Today",
+		startDate: date,
+		endDate: date
+	},
+	{
+		label: "Yesterday",
+		startDate: addDays(date, -1),
+		endDate: addDays(date, -1)
+	},
+	{
+		label: "This Week",
+		startDate: startOfWeek(date),
+		endDate: endOfWeek(date)
+	},
+	{
+		label: "Last Week",
+		startDate: startOfWeek(addWeeks(date, -1)),
+		endDate: endOfWeek(addWeeks(date, -1))
+	},
+	{
+		label: "This Month",
+		startDate: startOfMonth(date),
+		endDate: endOfMonth(date)
+	},
+	{
+		label: "Last Month",
+		startDate: startOfMonth(addMonths(date, -1)),
+		endDate: endOfMonth(addMonths(date, -1))
+	}
+];
+
 interface DateRangePickerProps extends WithStyles<typeof styles> {
 	title: string;
+	definedRanges?: DefinedRange[];
 	dateRange?: DateRange;
 }
 
@@ -74,6 +110,7 @@ const DateRangePickerImpl: React.FunctionComponent<DateRangePickerProps> = props
 
 	const { startDate, endDate } = dateRange;
 	const { classes } = props;
+	const ranges = getRanges(new Date());
 
 	const matchEnds = (day: Date) => isStartOfRange(day) || isEndOfRange(day);
 	const isStartOfRange = (day: Date) => (startDate && isSameDay(day, startDate)) as boolean;
@@ -122,9 +159,9 @@ const DateRangePickerImpl: React.FunctionComponent<DateRangePickerProps> = props
 
 	const onHover = (date: Date) => {
 		if (startDate && !endDate) {
-			if(!hoverDay || !isSameDay(date, hoverDay)) {
-				console.log("setHoverDay", getDate(date))
-				setHoverDay(date)
+			if (!hoverDay || !isSameDay(date, hoverDay)) {
+				console.log("setHoverDay", getDate(date));
+				setHoverDay(date);
 			}
 		}
 	};
@@ -140,18 +177,28 @@ const DateRangePickerImpl: React.FunctionComponent<DateRangePickerProps> = props
 	};
 
 	const setFirstMonthValidated = (date: Date) => {
-		if(isBefore(date, secondMonth)) {
-			setFirstMonth(date)
+		if (isBefore(date, secondMonth)) {
+			setFirstMonth(date);
 		}
-	}
+	};
 
 	const setSecondMonthValidated = (date: Date) => {
-		if(isAfter(date, firstMonth)) {
-			setSecondMonth(date)
+		if (isAfter(date, firstMonth)) {
+			setSecondMonth(date);
 		}
-	}
+	};
 
-
+	const setRange = (range: DateRange) => {
+		if (range.startDate && range.endDate) {
+			setDateRange(range);
+			setFirstMonth(range.startDate);
+			setSecondMonth(
+				isSameMonth(range.startDate, range.endDate)
+					? addMonths(range.startDate, 1)
+					: range.endDate
+			);
+		}
+	};
 
 	const functions = {
 		inHoverRange,
@@ -207,11 +254,11 @@ const DateRangePickerImpl: React.FunctionComponent<DateRangePickerProps> = props
 					</Grid>
 					<div className={classes.divider} />
 					<Grid>
-						<List>
-							<ListItem button>
-								<ListItemText>Today</ListItemText>
-							</ListItem>
-						</List>
+						<DefinedRanges
+							selectedRange={dateRange}
+							ranges={ranges}
+							setRange={setRange}
+						/>
 					</Grid>
 				</Grid>
 			</Paper>

@@ -12,3 +12,10 @@ export enum NavigationAction {
 	Previous = -1,
 	Next = 1
 }
+
+
+export type DefinedRange = {
+	startDate: Date,
+	endDate: Date,
+	label: string
+}

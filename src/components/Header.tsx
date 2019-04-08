@@ -10,7 +10,16 @@ import {
 } from "@material-ui/core";
 import React from "react";
 import { ChevronLeft, ChevronRight, FastRewind } from "@material-ui/icons";
-import { format, addMonths, isSameDay, isSameMonth, setMonth, getMonth, setYear, getYear } from "date-fns";
+import {
+	format,
+	addMonths,
+	isSameDay,
+	isSameMonth,
+	setMonth,
+	getMonth,
+	setYear,
+	getYear
+} from "date-fns";
 
 interface HeaderProps extends WithStyles<typeof styles> {
 	date: Date;
