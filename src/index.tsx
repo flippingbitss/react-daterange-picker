@@ -3,17 +3,10 @@ import {
 	MuiThemeProvider,
 	createMuiTheme,
 	CssBaseline,
-	Grid,
-	Paper,
-	Typography,
 	createStyles,
 	WithStyles,
 	withStyles,
-	Divider,
-	Theme,
-	ListItem,
-	ListItemText,
-	List
+	Theme
 } from "@material-ui/core";
 import {
 	addMonths,
@@ -26,21 +19,17 @@ import {
 	endOfMonth,
 	isBefore,
 	addDays,
-	format,
 	isSameMonth,
-	differenceInCalendarMonths,
 	getDate,
 	addWeeks
 } from "date-fns";
-import Month from "./components/Month";
-import { ArrowRightAlt } from "@material-ui/icons";
-import { DateRange, NavigationAction, Setter as StateSetter, DefinedRange } from "./types";
-import DefinedRanges from "./components/DefinedRanges";
+import { DateRange, NavigationAction, DefinedRange } from "./types";
+import Menu from "./components/Menu";
 
 const theme = createMuiTheme({ typography: { useNextVariants: true } });
 type Marker = symbol;
 
-const MARKERS: { [key: string]: Marker } = {
+export const MARKERS: { [key: string]: Marker } = {
 	FIRST_MONTH: Symbol("firstMonth"),
 	SECOND_MONTH: Symbol("secondMonth")
 };
@@ -99,6 +88,7 @@ interface DateRangePickerProps extends WithStyles<typeof styles> {
 }
 
 const DateRangePickerImpl: React.FunctionComponent<DateRangePickerProps> = props => {
+	// console.log("rendering DateRangePicker");
 	const [dateRange, setDateRange] = React.useState<DateRange>({ ...props.dateRange });
 	const [hoverDay, setHoverDay] = React.useState<Date>();
 	const [firstMonth, setFirstMonth] = React.useState<Date>(
@@ -112,70 +102,7 @@ const DateRangePickerImpl: React.FunctionComponent<DateRangePickerProps> = props
 	const { classes } = props;
 	const ranges = getRanges(new Date());
 
-	const matchEnds = (day: Date) => isStartOfRange(day) || isEndOfRange(day);
-	const isStartOfRange = (day: Date) => (startDate && isSameDay(day, startDate)) as boolean;
-	const isEndOfRange = (day: Date) => (endDate && isSameDay(day, endDate)) as boolean;
-	const inDateRange = (day: Date) => {
-		return (startDate && endDate && isWithinRange(day, startDate, endDate)) as boolean;
-	};
-
-	const inHoverRange = (day: Date) => {
-		return (startDate &&
-			!endDate &&
-			hoverDay &&
-			isAfter(hoverDay, startDate) &&
-			isWithinRange(day, startDate, hoverDay)) as boolean;
-	};
-
-	const getDaysInMonth = (date: Date) => {
-		const startWeek = startOfWeek(startOfMonth(date));
-		const endWeek = endOfWeek(endOfMonth(date));
-		const days = [];
-		for (let curr = startWeek; isBefore(curr, endWeek); ) {
-			days.push(curr);
-			curr = addDays(curr, 1);
-		}
-		return days;
-	};
-
-	const handleClick = (day: Date) => {
-		if (startDate && !endDate && isAfter(day, startDate)) {
-			setDateRange({ startDate, endDate: day });
-		} else {
-			setDateRange({ startDate: day, endDate: undefined });
-		}
-	};
-
-	const onNavigate = (marker: Marker, action: NavigationAction) => {
-		console.log("onNavigate", action, marker);
-		if (marker == MARKERS.FIRST_MONTH) {
-			const firstNew = addMonths(firstMonth, action);
-			if (isBefore(firstNew, secondMonth)) setFirstMonth(firstNew);
-		} else {
-			const secondNew = addMonths(secondMonth, action);
-			if (isBefore(firstMonth, secondNew)) setSecondMonth(secondNew);
-		}
-	};
-
-	const onHover = (date: Date) => {
-		if (startDate && !endDate) {
-			if (!hoverDay || !isSameDay(date, hoverDay)) {
-				console.log("setHoverDay", getDate(date));
-				setHoverDay(date);
-			}
-		}
-	};
-
-	const canNavigate = (marker: Marker): [boolean, boolean] => {
-		let canNavigateCloser = differenceInCalendarMonths(secondMonth, firstMonth) >= 2;
-
-		if (marker == MARKERS.FIRST_MONTH) {
-			return [true, canNavigateCloser];
-		} else {
-			return [canNavigateCloser, true];
-		}
-	};
-
+	// handlers
 	const setFirstMonthValidated = (date: Date) => {
 		if (isBefore(date, secondMonth)) {
 			setFirstMonth(date);
@@ -188,7 +115,7 @@ const DateRangePickerImpl: React.FunctionComponent<DateRangePickerProps> = props
 		}
 	};
 
-	const setRange = (range: DateRange) => {
+	const setDateRangeValidated = (range: DateRange) => {
 		if (range.startDate && range.endDate) {
 			setDateRange(range);
 			setFirstMonth(range.startDate);
@@ -200,68 +127,68 @@ const DateRangePickerImpl: React.FunctionComponent<DateRangePickerProps> = props
 		}
 	};
 
-	const functions = {
-		inHoverRange,
-		inDateRange,
-		isStartOfRange,
-		isEndOfRange,
-		matchEnds,
-		getDaysInMonth,
-		onHover,
-		onNavigate,
-		canNavigate,
-		handleClick
+	const onDayClick = (day: Date) => {
+		if (startDate && !endDate && !isBefore(day, startDate)) {
+			setDateRange({ startDate, endDate: day });
+		} else {
+			setDateRange({ startDate: day, endDate: undefined });
+		}
+		setHoverDay(day)
+	};
+
+	const onMonthNavigate = (marker: Marker, action: NavigationAction) => {
+		// console.log("onNavigate", action, marker);
+		if (marker == MARKERS.FIRST_MONTH) {
+			const firstNew = addMonths(firstMonth, action);
+			if (isBefore(firstNew, secondMonth)) setFirstMonth(firstNew);
+		} else {
+			const secondNew = addMonths(secondMonth, action);
+			if (isBefore(firstMonth, secondNew)) setSecondMonth(secondNew);
+		}
+	};
+
+	const onDayHover = (date: Date) => {
+		if (startDate && !endDate) {
+			if (!hoverDay || !isSameDay(date, hoverDay)) {
+				// console.log("setHoverDay", getDate(date));
+				setHoverDay(date);
+			}
+		}
+	};
+
+	// helpers
+	const inHoverRange = (day: Date) => {
+		return (startDate &&
+			!endDate &&
+			hoverDay &&
+			isAfter(hoverDay, startDate) &&
+			isWithinRange(day, startDate, hoverDay)) as boolean;
+	};
+
+	const helpers = {
+		inHoverRange
+	};
+
+	const handlers = {
+		onDayClick,
+		onDayHover,
+		onMonthNavigate
 	};
 
 	return (
 		<MuiThemeProvider theme={theme}>
 			<CssBaseline />
-
-			<Paper elevation={5} square>
-				<Grid container direction="row">
-					<Grid>
-						<Grid container className={classes.header} alignItems="center">
-							<Grid item className={classes.headerItem}>
-								<Typography variant="subtitle1">
-									{startDate ? format(startDate, "MMMM DD, YYYY") : "Start Date"}
-								</Typography>
-							</Grid>
-							<Grid item className={classes.headerItem}>
-								<ArrowRightAlt color="action" />
-							</Grid>
-							<Grid item className={classes.headerItem}>
-								<Typography variant="subtitle1">
-									{endDate ? format(endDate, "MMMM DD, YYYY") : "End Date"}
-								</Typography>
-							</Grid>
-						</Grid>
-						<Divider />
-						<Grid container direction="row" justify="center">
-							<Month
-								value={firstMonth}
-								setDate={setFirstMonthValidated}
-								functions={functions}
-								marker={MARKERS.FIRST_MONTH}
-							/>
-							<div className={classes.divider} />
-							<Month
-								value={secondMonth}
-								setDate={setSecondMonthValidated}
-								marker={MARKERS.SECOND_MONTH}
-								functions={functions}
-							/>
-						</Grid>
-					</Grid>
-					<div className={classes.divider} />
-					<Grid>
-						<DefinedRanges
-							selectedRange={dateRange}
-							ranges={ranges}
-							setRange={setRange}
-						/>
-					</Grid>
-				</Grid>
-			</Paper>
+			<Menu
+				dateRange={dateRange}
+				ranges={ranges}
+				firstMonth={firstMonth}
+				secondMonth={secondMonth}
+				setFirstMonth={setFirstMonthValidated}
+				setSecondMonth={setSecondMonthValidated}
+				setDateRange={setDateRangeValidated}
+				helpers={helpers}
+				handlers={handlers}
+			/>
 		</MuiThemeProvider>
 	);
 

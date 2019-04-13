@@ -8,11 +8,18 @@ import {
 	WithStyles,
 	withStyles
 } from "@material-ui/core";
-import { getDate, isSameMonth, isToday, addMonths } from "date-fns";
-import { chunks } from "../utils";
+import { getDate, isSameMonth, isToday, isSameDay, format } from "date-fns";
+import {
+	chunks,
+	getDaysInMonth,
+	isStartOfRange,
+	isEndOfRange,
+	inDateRange,
+	isRangeSameDay
+} from "../utils";
 import Header from "./Header";
 import Day from "./Day";
-import { NavigationAction, Setter } from "../types";
+import { NavigationAction, DateRange } from "../types";
 
 const WEEK_DAYS = ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"];
 
@@ -37,24 +44,22 @@ const styles = (theme: Theme) =>
 interface MonthProps extends WithStyles<typeof styles> {
 	value: Date;
 	marker: symbol;
-	setDate: (date: Date) => void;
-	functions: {
-		getDaysInMonth: (date: Date) => ReadonlyArray<Date>;
-		inHoverRange: (date: Date) => boolean;
-		inDateRange: (date: Date) => boolean;
-		isStartOfRange: (date: Date) => boolean;
-		isEndOfRange: (date: Date) => boolean;
-		matchEnds: (date: Date) => boolean;
-		onNavigate: (marker: symbol, action: NavigationAction) => void;
-		canNavigate: (marker: symbol) => [boolean, boolean]
-		handleClick: (date: Date) => void;
-		onHover: (date: Date) => void;
+	dateRange: DateRange;
+	navState: [boolean, boolean];
+	setValue: (date: Date) => void;
+	helpers: {
+		inHoverRange: (day: Date) => boolean;
+	};
+	handlers: {
+		onDayClick: (day: Date) => void;
+		onDayHover: (day: Date) => void;
+		onMonthNavigate: (marker: symbol, action: NavigationAction) => void;
 	};
 }
 
 const Month: React.FunctionComponent<MonthProps> = props => {
-	const { classes, functions: fns, value: date, marker, setDate } = props;
-	const [back, forward] = fns.canNavigate(marker);
+	const { classes, helpers, handlers, value: date, dateRange, marker, setValue: setDate } = props;
+	const [back, forward] = props.navState;
 	return (
 		<Paper square elevation={0} className={classes.root}>
 			<Grid container>
@@ -63,8 +68,10 @@ const Month: React.FunctionComponent<MonthProps> = props => {
 					setDate={setDate}
 					nextDisabled={!forward}
 					prevDisabled={!back}
-					onClickPrevious={() => fns.onNavigate(marker, NavigationAction.Previous)}
-					onClickNext={() => fns.onNavigate(marker, NavigationAction.Next)}
+					onClickPrevious={() =>
+						handlers.onMonthNavigate(marker, NavigationAction.Previous)
+					}
+					onClickNext={() => handlers.onMonthNavigate(marker, NavigationAction.Next)}
 				/>
 
 				<Grid
@@ -86,22 +93,30 @@ const Month: React.FunctionComponent<MonthProps> = props => {
 					direction="column"
 					justify="space-between"
 					className={classes.daysContainer}>
-					{chunks(fns.getDaysInMonth(date), 7).map((week, idx) => (
+					{chunks(getDaysInMonth(date), 7).map((week, idx) => (
 						<Grid key={idx} container direction="row" justify="center">
-							{week.map((day, dayIdx) => (
-								<Day
-									key={dayIdx}
-									filled={fns.matchEnds(day)}
-									outlined={isToday(day)}
-									highlighted={fns.inDateRange(day) || fns.inHoverRange(day)}
-									disabled={!isSameMonth(date, day)}
-									startOfRange={fns.isStartOfRange(day)}
-									endOfRange={fns.isEndOfRange(day)}
-									onClick={() => fns.handleClick(day)}
-									onHover={() => fns.onHover(day)}
-									value={getDate(day)}
-								/>
-							))}
+							{week.map(day => {
+								const isStart = isStartOfRange(dateRange, day);
+								const isEnd = isEndOfRange(dateRange, day);
+								const isRangeOneDay = isRangeSameDay(dateRange);
+								const highlighted =
+									inDateRange(dateRange, day) || helpers.inHoverRange(day);
+
+								return (
+									<Day
+										key={format(day, "MM-DD-YYYY")}
+										filled={isStart || isEnd}
+										outlined={isToday(day)}
+										highlighted={highlighted}
+										disabled={!isSameMonth(date, day)}
+										startOfRange={isStart && !isSameDay}
+										endOfRange={isEnd && !isRangeOneDay}
+										onClick={() => handlers.onDayClick(day)}
+										onHover={() => handlers.onDayHover(day)}
+										value={getDate(day)}
+									/>
+								);
+							})}
 						</Grid>
 					))}
 				</Grid>
