@@ -107,7 +107,7 @@ const Month: React.FunctionComponent<MonthProps> = props => {
 										key={format(day, "MM-DD-YYYY")}
 										filled={isStart || isEnd}
 										outlined={isToday(day)}
-										highlighted={highlighted}
+										highlighted={highlighted && !isRangeOneDay}
 										disabled={!isSameMonth(date, day)}
 										startOfRange={isStart && !isSameDay}
 										endOfRange={isEnd && !isRangeOneDay}

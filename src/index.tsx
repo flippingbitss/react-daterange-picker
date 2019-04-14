@@ -85,6 +85,8 @@ interface DateRangePickerProps extends WithStyles<typeof styles> {
 	title: string;
 	definedRanges?: DefinedRange[];
 	dateRange?: DateRange;
+	open: boolean;
+	onChange: (dateRange: DateRange) => void;
 }
 
 const DateRangePickerImpl: React.FunctionComponent<DateRangePickerProps> = props => {
@@ -99,7 +101,7 @@ const DateRangePickerImpl: React.FunctionComponent<DateRangePickerProps> = props
 	);
 
 	const { startDate, endDate } = dateRange;
-	const { classes } = props;
+	const { classes, open, onChange } = props;
 	const ranges = getRanges(new Date());
 
 	// handlers
@@ -129,15 +131,16 @@ const DateRangePickerImpl: React.FunctionComponent<DateRangePickerProps> = props
 
 	const onDayClick = (day: Date) => {
 		if (startDate && !endDate && !isBefore(day, startDate)) {
-			setDateRange({ startDate, endDate: day });
+			const newRange = { startDate, endDate: day };
+			onChange(newRange);
+			setDateRange(newRange);
 		} else {
 			setDateRange({ startDate: day, endDate: undefined });
 		}
-		setHoverDay(day)
+		setHoverDay(day);
 	};
 
 	const onMonthNavigate = (marker: Marker, action: NavigationAction) => {
-		// console.log("onNavigate", action, marker);
 		if (marker == MARKERS.FIRST_MONTH) {
 			const firstNew = addMonths(firstMonth, action);
 			if (isBefore(firstNew, secondMonth)) setFirstMonth(firstNew);
@@ -150,7 +153,6 @@ const DateRangePickerImpl: React.FunctionComponent<DateRangePickerProps> = props
 	const onDayHover = (date: Date) => {
 		if (startDate && !endDate) {
 			if (!hoverDay || !isSameDay(date, hoverDay)) {
-				// console.log("setHoverDay", getDate(date));
 				setHoverDay(date);
 			}
 		}
@@ -178,17 +180,19 @@ const DateRangePickerImpl: React.FunctionComponent<DateRangePickerProps> = props
 	return (
 		<MuiThemeProvider theme={theme}>
 			<CssBaseline />
-			<Menu
-				dateRange={dateRange}
-				ranges={ranges}
-				firstMonth={firstMonth}
-				secondMonth={secondMonth}
-				setFirstMonth={setFirstMonthValidated}
-				setSecondMonth={setSecondMonthValidated}
-				setDateRange={setDateRangeValidated}
-				helpers={helpers}
-				handlers={handlers}
-			/>
+			{open && (
+				<Menu
+					dateRange={dateRange}
+					ranges={ranges}
+					firstMonth={firstMonth}
+					secondMonth={secondMonth}
+					setFirstMonth={setFirstMonthValidated}
+					setSecondMonth={setSecondMonthValidated}
+					setDateRange={setDateRangeValidated}
+					helpers={helpers}
+					handlers={handlers}
+				/>
+			)}
 		</MuiThemeProvider>
 	);
 
