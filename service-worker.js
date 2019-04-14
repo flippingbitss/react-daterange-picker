@@ -14,7 +14,7 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/3.6.3/workbox-sw.js");
 
 importScripts(
-  "react-daterange-picker/precache-manifest.2ac5490fc5a1d7a566aee73556fabc0a.js"
+  "/react-daterange-picker/precache-manifest.207b6e27e22cc215ebd437fe3d5be277.js"
 );
 
 workbox.clientsClaim();
@@ -28,7 +28,7 @@ self.__precacheManifest = [].concat(self.__precacheManifest || []);
 workbox.precaching.suppressWarnings();
 workbox.precaching.precacheAndRoute(self.__precacheManifest, {});
 
-workbox.routing.registerNavigationRoute("react-daterange-picker/index.html", {
+workbox.routing.registerNavigationRoute("/react-daterange-picker/index.html", {
   
   blacklist: [/^\/_/,/\/[^\/]+\.[^\/]+$/],
 });
