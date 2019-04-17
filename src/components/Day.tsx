@@ -29,6 +29,9 @@ const styles = (theme: Theme) =>
 		rightBorderRadius: {
 			borderRadius: "0 50% 50% 0"
 		},
+		buttonContainer: {
+			display: "flex"
+		},
 		button: {
 			height: 36,
 			width: 36,
@@ -62,6 +65,7 @@ const Day: React.FunctionComponent<DayProps> = props => {
 	return (
 		<div
 			className={combine(
+				classes.buttonContainer,
 				props.startOfRange && classes.leftBorderRadius,
 				props.endOfRange && classes.rightBorderRadius,
 				!props.disabled && props.highlighted && classes.highlighted

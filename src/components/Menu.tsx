@@ -33,6 +33,8 @@ const styles = (theme: Theme) =>
 interface MenuProps extends WithStyles<typeof styles> {
 	dateRange: DateRange;
 	ranges: DefinedRange[];
+	minDate: Date;
+	maxDate: Date;
 	firstMonth: Date;
 	secondMonth: Date;
 	setFirstMonth: Setter<Date>;
@@ -51,19 +53,21 @@ interface MenuProps extends WithStyles<typeof styles> {
 const Menu: React.FunctionComponent<MenuProps> = props => {
 	const {
 		classes,
+		ranges,
 		dateRange,
+		minDate,
+		maxDate,
 		firstMonth,
 		setFirstMonth,
 		secondMonth,
 		setSecondMonth,
-		ranges,
 		setDateRange,
 		helpers,
 		handlers
 	} = props;
 	const { startDate, endDate } = dateRange;
 	const canNavigateCloser = differenceInCalendarMonths(secondMonth, firstMonth) >= 2;
-
+	const commonProps = { dateRange, minDate, maxDate, helpers, handlers };
 	return (
 		<Paper elevation={5} square>
 			<Grid container direction="row">
@@ -86,22 +90,18 @@ const Menu: React.FunctionComponent<MenuProps> = props => {
 					<Divider />
 					<Grid container direction="row" justify="center">
 						<Month
+							{...commonProps}
 							value={firstMonth}
 							setValue={setFirstMonth}
 							navState={[true, canNavigateCloser]}
-							dateRange={dateRange}
-							helpers={helpers}
-							handlers={handlers}
 							marker={MARKERS.FIRST_MONTH}
 						/>
 						<div className={classes.divider} />
 						<Month
+							{...commonProps}
 							value={secondMonth}
 							setValue={setSecondMonth}
 							navState={[canNavigateCloser, true]}
-							dateRange={dateRange}
-							helpers={helpers}
-							handlers={handlers}
 							marker={MARKERS.SECOND_MONTH}
 						/>
 					</Grid>

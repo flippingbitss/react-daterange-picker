@@ -8,7 +8,7 @@ import {
 	WithStyles,
 	withStyles
 } from "@material-ui/core";
-import { getDate, isSameMonth, isToday, isSameDay, format } from "date-fns";
+import { getDate, isSameMonth, isToday, format, isWithinRange } from "date-fns";
 import {
 	chunks,
 	getDaysInMonth,
@@ -45,6 +45,8 @@ interface MonthProps extends WithStyles<typeof styles> {
 	value: Date;
 	marker: symbol;
 	dateRange: DateRange;
+	minDate: Date;
+	maxDate: Date;
 	navState: [boolean, boolean];
 	setValue: (date: Date) => void;
 	helpers: {
@@ -58,7 +60,18 @@ interface MonthProps extends WithStyles<typeof styles> {
 }
 
 const Month: React.FunctionComponent<MonthProps> = props => {
-	const { classes, helpers, handlers, value: date, dateRange, marker, setValue: setDate } = props;
+	const {
+		classes,
+		helpers,
+		handlers,
+		value: date,
+		dateRange,
+		marker,
+		setValue: setDate,
+		minDate,
+		maxDate
+	} = props;
+
 	const [back, forward] = props.navState;
 	return (
 		<Paper square elevation={0} className={classes.root}>
@@ -108,8 +121,11 @@ const Month: React.FunctionComponent<MonthProps> = props => {
 										filled={isStart || isEnd}
 										outlined={isToday(day)}
 										highlighted={highlighted && !isRangeOneDay}
-										disabled={!isSameMonth(date, day)}
-										startOfRange={isStart && !isSameDay}
+										disabled={
+											!isSameMonth(date, day) ||
+											!isWithinRange(day, minDate, maxDate)
+										}
+										startOfRange={isStart && !isRangeOneDay}
 										endOfRange={isEnd && !isRangeOneDay}
 										onClick={() => handlers.onDayClick(day)}
 										onHover={() => handlers.onDayHover(day)}
