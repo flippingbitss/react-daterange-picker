@@ -40,6 +40,27 @@ class App extends React.Component<Props, State> {
 export default App;
 ```
 
+## Basic example using hooks
+```tsx
+import React from "react";
+import { DateRangePicker, DateRange } from "@matharumanpreet00/react-daterange-picker";
+
+type Props = {}
+
+const App: React.FunctionComponent<Props> = props => {
+	const [open, setOpen] = React.useState(false);
+	const [dateRange, setDateRange] = React.useState<DateRange>({});
+
+	return (
+		<DateRangePicker
+			open={open}
+			onChange={range => setDateRange(range)}
+		/>
+	);
+}
+
+export default App;
+```
 
 ## Types 
 ```ts
