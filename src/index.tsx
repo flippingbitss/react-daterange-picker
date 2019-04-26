@@ -23,6 +23,18 @@ export const MARKERS: { [key: string]: Marker } = {
 	SECOND_MONTH: Symbol("secondMonth")
 };
 
+const getValidatedMonths = (range: DateRange, minDate: Date, maxDate: Date) => {
+	let { startDate, endDate } = range;
+	if (startDate && endDate) {
+		const newStart = max(startDate, minDate);
+		const newEnd = min(endDate, maxDate);
+
+		return [newStart, isSameMonth(newStart, newEnd) ? addMonths(newStart, 1) : newEnd)]
+	} else {
+		return [startDate, endDate];
+	}
+}
+
 const styles = (theme: Theme) =>
 	createStyles({
 		header: {
@@ -60,15 +72,16 @@ const DateRangePickerImpl: React.FunctionComponent<DateRangePickerProps> = props
 
 	const minDateValid = parseOptionalDate(minDate, addYears(today, -10));
 	const maxDateValid = parseOptionalDate(maxDate, addYears(today, 10));
+	const [intialFirstMonth, initialSecondMonth] = getValidatedMonths(initialDateRange || {}, minDateValid, maxDateValid)
 
 	// console.log("rendering DateRangePicker");
 	const [dateRange, setDateRange] = React.useState<DateRange>({ ...initialDateRange });
 	const [hoverDay, setHoverDay] = React.useState<Date>();
 	const [firstMonth, setFirstMonth] = React.useState<Date>(
-		(initialDateRange && initialDateRange.startDate) || today
+		intialFirstMonth || today
 	);
 	const [secondMonth, setSecondMonth] = React.useState<Date>(
-		(initialDateRange && initialDateRange.endDate) || addMonths(firstMonth, 1)
+		initialSecondMonth || addMonths(firstMonth, 1)
 	);
 
 	const { startDate, endDate } = dateRange;
@@ -164,3 +177,4 @@ const DateRangePickerImpl: React.FunctionComponent<DateRangePickerProps> = props
 };
 
 export const DateRangePicker = withStyles(styles)(DateRangePickerImpl);
+

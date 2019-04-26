@@ -1,8 +1,12 @@
 {
 	"name": "@matharumanpreet00/react-daterange-picker",
-	"version": "1.0.0",
+	"version": "1.0.1",
 	"description": "A react date range picker using Material Design",
 	"author": "Manpreet Singh Matharu",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/matharumanpreet00/react-daterange-picker"
+	},
 	"main": "build/index.js",
 	"scripts": {
 		"start": "tsc --watch",
