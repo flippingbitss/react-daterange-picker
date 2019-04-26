@@ -59,9 +59,6 @@ const styles = (theme: Theme) =>
 
 const Day: React.FunctionComponent<DayProps> = props => {
 	const { classes } = props;
-
-
-
 	return (
 		<div
 			className={combine(

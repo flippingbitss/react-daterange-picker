@@ -1,7 +1,6 @@
 import {
 	WithStyles,
 	Grid,
-	Typography,
 	createStyles,
 	withStyles,
 	IconButton,
@@ -9,17 +8,8 @@ import {
 	MenuItem
 } from "@material-ui/core";
 import React from "react";
-import { ChevronLeft, ChevronRight, FastRewind } from "@material-ui/icons";
-import {
-	format,
-	addMonths,
-	isSameDay,
-	isSameMonth,
-	setMonth,
-	getMonth,
-	setYear,
-	getYear
-} from "date-fns";
+import { ChevronLeft, ChevronRight } from "@material-ui/icons";
+import { isSameMonth, setMonth, getMonth, setYear, getYear } from "date-fns";
 
 interface HeaderProps extends WithStyles<typeof styles> {
 	date: Date;
@@ -57,11 +47,12 @@ const MONTHS = [
 	"Dec"
 ];
 
-const currentYear = new Date().getFullYear();
-
-const YEARS = Array(10)
-	.fill(0)
-	.map((y, i) => currentYear - 9 + i); // TODO: make part of the state
+const generateYears = (relativeTo: Date, count: number) => {
+	const half = Math.floor(count / 2);
+	return Array(count)
+		.fill(0)
+		.map((y, i) => relativeTo.getFullYear() - half + i); // TODO: make part of the state
+};
 
 const Header: React.FunctionComponent<HeaderProps> = ({
 	date,
@@ -102,7 +93,7 @@ const Header: React.FunctionComponent<HeaderProps> = ({
 
 			<Grid item>
 				<Select value={getYear(date)} onChange={handleYearChange}>
-					{YEARS.map(year => (
+					{generateYears(date, 50).map(year => (
 						<MenuItem key={year} value={year}>
 							{year}
 						</MenuItem>

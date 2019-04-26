@@ -1,13 +1,5 @@
 import * as React from "react";
-import {
-	MuiThemeProvider,
-	createMuiTheme,
-	CssBaseline,
-	createStyles,
-	WithStyles,
-	withStyles,
-	Theme
-} from "@material-ui/core";
+import { createStyles, WithStyles, withStyles, Theme } from "@material-ui/core";
 import {
 	addMonths,
 	isSameDay,
@@ -24,7 +16,6 @@ import Menu from "./components/Menu";
 import { defaultRanges } from "./defaults";
 import { parseOptionalDate } from "./utils";
 
-const theme = createMuiTheme({ typography: { useNextVariants: true } });
 type Marker = symbol;
 
 export const MARKERS: { [key: string]: Marker } = {
@@ -59,7 +50,6 @@ const DateRangePickerImpl: React.FunctionComponent<DateRangePickerProps> = props
 	const today = new Date();
 
 	const {
-		classes,
 		open,
 		onChange,
 		initialDateRange,
@@ -156,28 +146,21 @@ const DateRangePickerImpl: React.FunctionComponent<DateRangePickerProps> = props
 		onMonthNavigate
 	};
 
-	return (
-		<MuiThemeProvider theme={theme}>
-			<CssBaseline />
-			{open && (
-				<Menu
-					dateRange={dateRange}
-					minDate={minDateValid}
-					maxDate={maxDateValid}
-					ranges={definedRanges}
-					firstMonth={firstMonth}
-					secondMonth={secondMonth}
-					setFirstMonth={setFirstMonthValidated}
-					setSecondMonth={setSecondMonthValidated}
-					setDateRange={setDateRangeValidated}
-					helpers={helpers}
-					handlers={handlers}
-				/>
-			)}
-		</MuiThemeProvider>
-	);
-
-	//return (<Typography>Hello blahblas {props.title}</Typography>);
+	return open ? (
+		<Menu
+			dateRange={dateRange}
+			minDate={minDateValid}
+			maxDate={maxDateValid}
+			ranges={definedRanges}
+			firstMonth={firstMonth}
+			secondMonth={secondMonth}
+			setFirstMonth={setFirstMonthValidated}
+			setSecondMonth={setSecondMonthValidated}
+			setDateRange={setDateRangeValidated}
+			helpers={helpers}
+			handlers={handlers}
+		/>
+	) : null;
 };
 
 export const DateRangePicker = withStyles(styles)(DateRangePickerImpl);
