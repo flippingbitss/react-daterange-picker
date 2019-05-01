@@ -29,11 +29,11 @@ const getValidatedMonths = (range: DateRange, minDate: Date, maxDate: Date) => {
 		const newStart = max(startDate, minDate);
 		const newEnd = min(endDate, maxDate);
 
-		return [newStart, isSameMonth(newStart, newEnd) ? addMonths(newStart, 1) : newEnd]
+		return [newStart, isSameMonth(newStart, newEnd) ? addMonths(newStart, 1) : newEnd];
 	} else {
 		return [startDate, endDate];
 	}
-}
+};
 
 const styles = (theme: Theme) =>
 	createStyles({
@@ -72,14 +72,16 @@ const DateRangePickerImpl: React.FunctionComponent<DateRangePickerProps> = props
 
 	const minDateValid = parseOptionalDate(minDate, addYears(today, -10));
 	const maxDateValid = parseOptionalDate(maxDate, addYears(today, 10));
-	const [intialFirstMonth, initialSecondMonth] = getValidatedMonths(initialDateRange || {}, minDateValid, maxDateValid)
+	const [intialFirstMonth, initialSecondMonth] = getValidatedMonths(
+		initialDateRange || {},
+		minDateValid,
+		maxDateValid
+	);
 
 	// console.log("rendering DateRangePicker");
 	const [dateRange, setDateRange] = React.useState<DateRange>({ ...initialDateRange });
 	const [hoverDay, setHoverDay] = React.useState<Date>();
-	const [firstMonth, setFirstMonth] = React.useState<Date>(
-		intialFirstMonth || today
-	);
+	const [firstMonth, setFirstMonth] = React.useState<Date>(intialFirstMonth || today);
 	const [secondMonth, setSecondMonth] = React.useState<Date>(
 		initialSecondMonth || addMonths(firstMonth, 1)
 	);
@@ -104,8 +106,8 @@ const DateRangePickerImpl: React.FunctionComponent<DateRangePickerProps> = props
 		if (newStart && newEnd) {
 			range.startDate = newStart = max(newStart, minDateValid);
 			range.endDate = newEnd = min(newEnd, maxDateValid);
-
 			setDateRange(range);
+			onChange(range);
 			setFirstMonth(newStart);
 			setSecondMonth(isSameMonth(newStart, newEnd) ? addMonths(newStart, 1) : newEnd);
 		}
@@ -177,4 +179,3 @@ const DateRangePickerImpl: React.FunctionComponent<DateRangePickerProps> = props
 };
 
 export const DateRangePicker = withStyles(styles)(DateRangePickerImpl);
-
