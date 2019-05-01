@@ -178,4 +178,5 @@ const DateRangePickerImpl: React.FunctionComponent<DateRangePickerProps> = props
 	) : null;
 };
 
+export { DateRange, DefinedRange } from "./types";
 export const DateRangePicker = withStyles(styles)(DateRangePickerImpl);
