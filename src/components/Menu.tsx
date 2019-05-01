@@ -10,7 +10,7 @@ import {
 	withStyles
 } from "@material-ui/core";
 import { format, differenceInCalendarMonths } from "date-fns";
-import { ArrowRightAlt } from "@material-ui/icons";
+import ArrowRightAlt from "@material-ui/icons/ArrowRightAlt";
 import Month from "./Month";
 import DefinedRanges from "./DefinedRanges";
 import { DateRange, DefinedRange, Setter, NavigationAction } from "../types";
@@ -22,7 +22,8 @@ const styles = (theme: Theme) =>
 			padding: "20px 70px"
 		},
 		headerItem: {
-			flex: 1
+			flex: 1,
+			textAlign: "center"
 		},
 		divider: {
 			borderLeft: `1px solid ${theme.palette.action.hover}`,
@@ -70,7 +71,7 @@ const Menu: React.FunctionComponent<MenuProps> = props => {
 	const commonProps = { dateRange, minDate, maxDate, helpers, handlers };
 	return (
 		<Paper elevation={5} square>
-			<Grid container direction="row">
+			<Grid container direction="row" wrap="nowrap">
 				<Grid>
 					<Grid container className={classes.header} alignItems="center">
 						<Grid item className={classes.headerItem}>
@@ -88,7 +89,7 @@ const Menu: React.FunctionComponent<MenuProps> = props => {
 						</Grid>
 					</Grid>
 					<Divider />
-					<Grid container direction="row" justify="center">
+					<Grid container direction="row" justify="center" wrap="nowrap">
 						<Month
 							{...commonProps}
 							value={firstMonth}

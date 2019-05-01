@@ -90,16 +90,4 @@ const Day: React.FunctionComponent<DayProps> = props => {
 	);
 };
 
-export default withStyles(styles)(
-	React.memo(Day, (prev, next) => {
-		return (
-			prev.filled == next.filled &&
-			prev.highlighted == next.highlighted &&
-			prev.filled == next.filled &&
-			prev.disabled == next.disabled &&
-			prev.startOfRange == next.startOfRange &&
-			prev.endOfRange == next.endOfRange &&
-			prev.value == next.value
-		);
-	})
-);
+export default withStyles(styles)(Day);

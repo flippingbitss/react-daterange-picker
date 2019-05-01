@@ -8,8 +8,9 @@ import {
 	MenuItem
 } from "@material-ui/core";
 import React from "react";
-import { ChevronLeft, ChevronRight } from "@material-ui/icons";
-import { isSameMonth, setMonth, getMonth, setYear, getYear } from "date-fns";
+import ChevronLeft from "@material-ui/icons/ChevronLeft";
+import ChevronRight from "@material-ui/icons/ChevronRight";
+import { setMonth, getMonth, setYear, getYear } from "date-fns";
 
 interface HeaderProps extends WithStyles<typeof styles> {
 	date: Date;
@@ -93,7 +94,7 @@ const Header: React.FunctionComponent<HeaderProps> = ({
 
 			<Grid item>
 				<Select value={getYear(date)} onChange={handleYearChange}>
-					{generateYears(date, 50).map(year => (
+					{generateYears(date, 30).map(year => (
 						<MenuItem key={year} value={year}>
 							{year}
 						</MenuItem>
@@ -111,12 +112,4 @@ const Header: React.FunctionComponent<HeaderProps> = ({
 	);
 };
 
-export default withStyles(styles)(
-	React.memo(Header, (prev, next) => {
-		return (
-			isSameMonth(prev.date, next.date) &&
-			prev.nextDisabled == next.nextDisabled &&
-			prev.prevDisabled == next.prevDisabled
-		);
-	})
-);
+export default withStyles(styles)(Header);

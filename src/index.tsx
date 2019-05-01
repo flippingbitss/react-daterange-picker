@@ -29,7 +29,7 @@ const getValidatedMonths = (range: DateRange, minDate: Date, maxDate: Date) => {
 		const newStart = max(startDate, minDate);
 		const newEnd = min(endDate, maxDate);
 
-		return [newStart, isSameMonth(newStart, newEnd) ? addMonths(newStart, 1) : newEnd)]
+		return [newStart, isSameMonth(newStart, newEnd) ? addMonths(newStart, 1) : newEnd]
 	} else {
 		return [startDate, endDate];
 	}
