@@ -32,6 +32,11 @@ const getDefaultRanges = (date: Date): DefinedRange[] => [
 		endDate: endOfWeek(addWeeks(date, -1))
 	},
 	{
+		label: "Last 7 Days",
+		startDate: addWeeks(date, -1),
+		endDate: date
+	},
+	{
 		label: "This Month",
 		startDate: startOfMonth(date),
 		endDate: endOfMonth(date)
@@ -44,5 +49,3 @@ const getDefaultRanges = (date: Date): DefinedRange[] => [
 ];
 
 export const defaultRanges = getDefaultRanges(new Date());
-
-
