@@ -1,5 +1,4 @@
 import * as React from "react";
-import { createStyles, WithStyles, withStyles, Theme } from "@material-ui/core";
 import {
 	addMonths,
 	isSameDay,
@@ -35,21 +34,7 @@ const getValidatedMonths = (range: DateRange, minDate: Date, maxDate: Date) => {
 	}
 };
 
-const styles = (theme: Theme) =>
-	createStyles({
-		header: {
-			padding: "20px 70px"
-		},
-		headerItem: {
-			flex: 1
-		},
-		divider: {
-			borderLeft: `1px solid ${theme.palette.action.hover}`,
-			marginBottom: 20
-		}
-	});
-
-interface DateRangePickerProps extends WithStyles<typeof styles> {
+interface DateRangePickerProps {
 	open: boolean;
 	initialDateRange?: DateRange;
 	definedRanges?: DefinedRange[];
@@ -179,4 +164,4 @@ const DateRangePickerImpl: React.FunctionComponent<DateRangePickerProps> = props
 };
 
 export { DateRange, DefinedRange } from "./types";
-export const DateRangePicker = withStyles(styles)(DateRangePickerImpl);
+export const DateRangePicker = DateRangePickerImpl;
