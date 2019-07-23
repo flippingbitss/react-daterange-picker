@@ -1,14 +1,24 @@
-# react-daterange-picker
+# react-daterange-picker 
+A react date range picker using material-ui components.
+
+<a href='https://www.npmjs.com/package/@matharumanpreet00/react-daterange-picker'>
+    <img src='https://img.shields.io/npm/v/@matharumanpreet00/react-daterange-picker.svg' alt='Latest npm version'>
+</a>
 
 ## Live Demo: https://matharumanpreet00.github.io/react-daterange-picker/
 
-A react date range picker using material-ui components.
 
-*NOTE*: This project is a WIP and **NOT** stable for use in production
+
+
+## Usage
+
+```bash
+npm install @matharumanpreet00/react-daterange-picker --save
+# or with yarn
+yarn add @matharumanpreet00/react-daterange-picker
+```
 
 ![Screenshot](/screenshot_1.png?raw=true "Screenshot")
-
-
 
 ## Basic Example
 ```tsx
