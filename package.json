@@ -11,25 +11,34 @@
 		"url": "https://github.com/matharumanpreet00/react-daterange-picker"
 	},
 	"main": "build/index.js",
+	"module": "build/index.es.js",
+	"jsnext:main": "build/index.es.js",
 	"scripts": {
-		"start": "tsc --watch",
-		"build": "tsc",
-		"test": "echo \"Error: no test specified\" && exit 1"
+		"build": "rollup -c",
+		"storybook": "start-storybook"
 	},
 	"dependencies": {
-		"@material-ui/core": "^3.9.2",
-		"@material-ui/icons": "^3.0.2",
-		"date-fns": "^1.30.1"
+		"@material-ui/core": "^4.9.5",
+		"@material-ui/icons": "^4.5.1",
+		"date-fns": "^2.10.0"
 	},
 	"devDependencies": {
-		"@types/react": "^16.8.8",
-		"@types/react-dom": "^16.8.3",
-		"typescript": "^3.3.4"
+		"@babel/core": "^7.8.6",
+		"@storybook/react": "^5.3.14",
+		"awesome-typescript-loader": "^5.2.1",
+		"babel-loader": "^8.0.6",
+		"rollup": "^1.27.13",
+		"rollup-plugin-commonjs": "^10.1.0",
+		"rollup-plugin-node-resolve": "^5.2.0",
+		"rollup-plugin-peer-deps-external": "^2.2.0",
+		"rollup-plugin-typescript2": "^0.25.3",
+		"typescript": "^3.7.3"
 	},
 	"peerDependencies": {
-		"@material-ui/core": "^3.9.2",
-		"react": "^16.8.4",
-		"react-dom": "^16.8.4"
+		"@material-ui/core": "4.8.0",
+		"@material-ui/icons": "^4.5.1",
+		"react": "^16",
+		"react-dom": "^16"
 	},
 	"keywords": [
 		"react",

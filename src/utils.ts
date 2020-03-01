@@ -6,8 +6,8 @@ import {
 	isBefore,
 	addDays,
 	isSameDay,
-	isWithinRange,
-	parse,
+	isWithinInterval,
+	toDate,
 	isValid
 } from "date-fns";
 import { DateRange } from "./types";
@@ -15,7 +15,7 @@ import { DateRange } from "./types";
 export const identity = <T>(x: T) => x;
 
 export const chunks = <T>(array: ReadonlyArray<T>, size: number): T[][] => {
-	return Array.from({ length: Math.ceil(array.length / size) }, (v, i) =>
+	return Array.from({ length: Math.ceil(array.length / size) }, (_, i) =>
 		array.slice(i * size, i * size + size)
 	);
 };
@@ -27,7 +27,7 @@ export const getDaysInMonth = (date: Date) => {
 	const startWeek = startOfWeek(startOfMonth(date));
 	const endWeek = endOfWeek(endOfMonth(date));
 	const days = [];
-	for (let curr = startWeek; isBefore(curr, endWeek); ) {
+	for (let curr = startWeek; isBefore(curr, endWeek);) {
 		days.push(curr);
 		curr = addDays(curr, 1);
 	}
@@ -43,7 +43,7 @@ export const isEndOfRange = ({ endDate }: DateRange, day: Date) =>
 export const inDateRange = ({ startDate, endDate }: DateRange, day: Date) =>
 	(startDate &&
 		endDate &&
-		(isWithinRange(day, startDate, endDate) ||
+		(isWithinInterval(day, { start: startDate, end: endDate }) ||
 			isSameDay(day, startDate) ||
 			isSameDay(day, endDate))) as boolean;
 
@@ -58,7 +58,7 @@ type Falsy = false | null | undefined | 0 | "";
 
 export const parseOptionalDate = (date: Date | string | Falsy, defaultValue: Date) => {
 	if (date) {
-		const parsed = parse(date);
+		const parsed = toDate(date as Date);
 		if (isValid(parsed)) return parsed;
 	}
 	return defaultValue;

@@ -19,6 +19,7 @@ interface HeaderProps extends WithStyles<typeof styles> {
 	prevDisabled: boolean;
 	onClickNext: () => void;
 	onClickPrevious: () => void;
+	months?: [string, string, string, string, string, string, string, string, string, string, string, string];
 }
 
 const styles = createStyles({
@@ -52,7 +53,7 @@ const generateYears = (relativeTo: Date, count: number) => {
 	const half = Math.floor(count / 2);
 	return Array(count)
 		.fill(0)
-		.map((y, i) => relativeTo.getFullYear() - half + i); // TODO: make part of the state
+		.map((_, i) => relativeTo.getFullYear() - half + i); // TODO: make part of the state
 };
 
 const Header: React.FunctionComponent<HeaderProps> = ({
@@ -62,7 +63,8 @@ const Header: React.FunctionComponent<HeaderProps> = ({
 	nextDisabled,
 	prevDisabled,
 	onClickNext,
-	onClickPrevious
+	onClickPrevious,
+	months = MONTHS,
 }) => {
 	const handleMonthChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
 		setDate(setMonth(date, parseInt(event.target.value)));
@@ -87,7 +89,7 @@ const Header: React.FunctionComponent<HeaderProps> = ({
 					value={getMonth(date)}
 					onChange={handleMonthChange}
 					MenuProps={{ disablePortal: true }}>
-					{MONTHS.map((month, idx) => (
+					{months.map((month, idx) => (
 						<MenuItem key={month} value={idx}>
 							{month}
 						</MenuItem>
