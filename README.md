@@ -5,7 +5,7 @@ A react date range picker using material-ui components.
     <img src='https://img.shields.io/npm/v/@matharumanpreet00/react-daterange-picker.svg' alt='Latest npm version'>
 </a>
 
-## Live Demo: https://matharumanpreet00.github.io/react-daterange-picker/
+## Live Demo: https://flippingbitss.github.io/react-daterange-picker/
 
 
 
