@@ -3,12 +3,14 @@ import {
   Paper,
   Grid,
   Typography,
-  Divider,
+  Divider
+} from "@material-ui/core";
+import {
   createStyles,
   WithStyles,
   Theme,
   withStyles
-} from "@material-ui/core";
+} from '@material-ui/core/styles'
 import { format, differenceInCalendarMonths } from "date-fns";
 import ArrowRightAlt from "@material-ui/icons/ArrowRightAlt";
 import Month from "./Month";

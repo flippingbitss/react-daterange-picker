@@ -1,12 +1,10 @@
 import {
-	WithStyles,
 	Grid,
-	createStyles,
-	withStyles,
 	IconButton,
 	Select,
 	MenuItem
 } from "@material-ui/core";
+import { WithStyles, createStyles, withStyles } from '@material-ui/core/styles'
 import React from "react";
 import ChevronLeft from "@material-ui/icons/ChevronLeft";
 import ChevronRight from "@material-ui/icons/ChevronRight";

@@ -1,14 +1,7 @@
 import * as React from "react";
-// import {
-// 	IconButton,
-// 	Typography,
-// 	createStyles,
-// 	Theme,
-// 	WithStyles,
-// 	withStyles
-// } from "@material-ui/core";
 import { combine } from "../utils";
-import { Theme, createStyles, makeStyles, IconButton, Typography } from "@material-ui/core";
+import { IconButton, Typography } from "@material-ui/core";
+import { Theme, createStyles, makeStyles } from '@material-ui/core/styles'
 
 interface DayProps {
   filled?: boolean;
