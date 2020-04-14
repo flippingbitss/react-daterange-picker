@@ -127,6 +127,11 @@ const DateRangePickerImpl: React.FunctionComponent<DateRangePickerProps> = props
 		}
 	};
 
+	const onReset = () =>  {
+		setDateRange({});
+		onChange({});
+	}
+
 	// helpers
 	const inHoverRange = (day: Date) => {
 		return (startDate &&
@@ -143,7 +148,8 @@ const DateRangePickerImpl: React.FunctionComponent<DateRangePickerProps> = props
 	const handlers = {
 		onDayClick,
 		onDayHover,
-		onMonthNavigate
+		onMonthNavigate,
+		onReset
 	};
 
 	return open ? (

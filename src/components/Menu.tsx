@@ -15,6 +15,8 @@ import Month from "./Month";
 import DefinedRanges from "./DefinedRanges";
 import { DateRange, DefinedRange, Setter, NavigationAction } from "../types";
 import { MARKERS } from "..";
+import IconButton from "@material-ui/core/IconButton";
+import CloseIcon from '@material-ui/icons/Close';
 
 const styles = (theme: Theme) =>
 	createStyles({
@@ -28,6 +30,11 @@ const styles = (theme: Theme) =>
 		divider: {
 			borderLeft: `1px solid ${theme.palette.action.hover}`,
 			marginBottom: 20
+		},
+		resetButton: {
+			position: 'absolute',
+			top: 15,
+			right: 15
 		}
 	});
 
@@ -48,6 +55,7 @@ interface MenuProps extends WithStyles<typeof styles> {
 		onDayClick: (day: Date) => void;
 		onDayHover: (day: Date) => void;
 		onMonthNavigate: (marker: symbol, action: NavigationAction) => void;
+		onReset: () => void;
 	};
 }
 
@@ -71,6 +79,9 @@ const Menu: React.FunctionComponent<MenuProps> = props => {
 	const commonProps = { dateRange, minDate, maxDate, helpers, handlers };
 	return (
 		<Paper elevation={5} square>
+			<IconButton className={classes.resetButton} onClick={handlers.onReset}>
+				<CloseIcon />
+			</IconButton>
 			<Grid container direction="row" wrap="nowrap">
 				<Grid>
 					<Grid container className={classes.header} alignItems="center">
