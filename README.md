@@ -96,3 +96,9 @@ Name | Type | Required | Default value | Description
 `onChange` | `(DateRange) => void` | _required_ | - | handler function for providing selected date range
 `definedRanges` | `DefinedRange[]` | | - | custom defined ranges to show in the list
 
+## Development
+
+```
+npm install
+npm run storybook
+```

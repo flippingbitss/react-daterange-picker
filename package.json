@@ -14,7 +14,9 @@
 	"scripts": {
 		"start": "tsc --watch",
 		"build": "tsc",
-		"test": "echo \"Error: no test specified\" && exit 1"
+		"test": "echo \"Error: no test specified\" && exit 1",
+		"storybook": "start-storybook -p 6006",
+		"build-storybook": "build-storybook"
 	},
 	"dependencies": {
 		"@material-ui/core": "^3.9.2",
@@ -22,8 +24,15 @@
 		"date-fns": "^1.30.1"
 	},
 	"devDependencies": {
+		"@babel/core": "^7.10.4",
+		"@storybook/addon-actions": "^5.3.19",
+		"@storybook/addon-links": "^5.3.19",
+		"@storybook/addons": "^5.3.19",
+		"@storybook/react": "^5.3.19",
 		"@types/react": "^16.8.8",
 		"@types/react-dom": "^16.8.3",
+		"babel-loader": "^8.1.0",
+		"ts-loader": "^7.0.5",
 		"typescript": "^3.3.4"
 	},
 	"peerDependencies": {
