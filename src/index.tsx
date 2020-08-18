@@ -98,6 +98,11 @@ const DateRangePickerImpl: React.FunctionComponent<DateRangePickerProps> = props
 		}
 	};
 
+	const resetDateRange = () => {
+		setDateRange({ ...initialDateRange });
+		onChange({ ...initialDateRange });
+	}
+
 	const onDayClick = (day: Date) => {
 		if (startDate && !endDate && !isBefore(day, startDate)) {
 			const newRange = { startDate, endDate: day };
@@ -157,6 +162,7 @@ const DateRangePickerImpl: React.FunctionComponent<DateRangePickerProps> = props
 			setFirstMonth={setFirstMonthValidated}
 			setSecondMonth={setSecondMonthValidated}
 			setDateRange={setDateRangeValidated}
+			resetDateRage={resetDateRange}
 			helpers={helpers}
 			handlers={handlers}
 		/>
