@@ -8,7 +8,7 @@ import {
 	WithStyles,
 	withStyles
 } from "@material-ui/core";
-import { getDate, isSameMonth, isToday, format, isWithinRange } from "date-fns";
+import { getDate, isSameMonth, isToday, format, isWithinInterval } from "date-fns";
 import {
 	chunks,
 	getDaysInMonth,
@@ -23,7 +23,7 @@ import { NavigationAction, DateRange } from "../types";
 
 const WEEK_DAYS = ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"];
 
-const styles = (theme: Theme) =>
+const styles = (_: Theme) =>
 	createStyles({
 		root: {
 			width: 290
@@ -57,6 +57,8 @@ interface MonthProps extends WithStyles<typeof styles> {
 		onDayHover: (day: Date) => void;
 		onMonthNavigate: (marker: symbol, action: NavigationAction) => void;
 	};
+	weekDays?: [string, string, string, string, string, string, string];
+	months?: [string, string, string, string, string, string, string, string, string, string, string, string];
 }
 
 const Month: React.FunctionComponent<MonthProps> = props => {
@@ -69,7 +71,9 @@ const Month: React.FunctionComponent<MonthProps> = props => {
 		marker,
 		setValue: setDate,
 		minDate,
-		maxDate
+		maxDate,
+		weekDays = WEEK_DAYS,
+		months,
 	} = props;
 
 	const [back, forward] = props.navState;
@@ -85,6 +89,7 @@ const Month: React.FunctionComponent<MonthProps> = props => {
 						handlers.onMonthNavigate(marker, NavigationAction.Previous)
 					}
 					onClickNext={() => handlers.onMonthNavigate(marker, NavigationAction.Next)}
+					months={months}
 				/>
 
 				<Grid
@@ -93,7 +98,7 @@ const Month: React.FunctionComponent<MonthProps> = props => {
 					direction="row"
 					justify="space-between"
 					className={classes.weekDaysContainer}>
-					{WEEK_DAYS.map(day => (
+					{weekDays.map(day => (
 						<Typography color="textSecondary" key={day} variant="caption">
 							{day}
 						</Typography>
@@ -117,13 +122,13 @@ const Month: React.FunctionComponent<MonthProps> = props => {
 
 								return (
 									<Day
-										key={format(day, "MM-DD-YYYY")}
+										key={format(day, "MM-dd-yyyy")}
 										filled={isStart || isEnd}
 										outlined={isToday(day)}
 										highlighted={highlighted && !isRangeOneDay}
 										disabled={
 											!isSameMonth(date, day) ||
-											!isWithinRange(day, minDate, maxDate)
+											!isWithinInterval(day, { start: minDate, end: maxDate })
 										}
 										startOfRange={isStart && !isRangeOneDay}
 										endOfRange={isEnd && !isRangeOneDay}
