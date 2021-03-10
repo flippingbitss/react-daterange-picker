@@ -64,12 +64,12 @@ const Header: React.FunctionComponent<HeaderProps> = ({
 	onClickNext,
 	onClickPrevious
 }) => {
-	const handleMonthChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-		setDate(setMonth(date, parseInt(event.target.value)));
+	const handleMonthChange = (event: React.ChangeEvent<{ value: unknown }>) => {
+		setDate(setMonth(date, parseInt(event.target.value as string)));
 	};
 
-	const handleYearChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-		setDate(setYear(date, parseInt(event.target.value)));
+	const handleYearChange = (event: React.ChangeEvent<{ value: unknown }>) => {
+		setDate(setYear(date, parseInt(event.target.value as string)));
 	};
 
 	return (

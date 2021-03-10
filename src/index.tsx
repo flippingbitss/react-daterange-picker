@@ -2,7 +2,7 @@ import * as React from "react";
 import {
 	addMonths,
 	isSameDay,
-	isWithinRange,
+	isWithinInterval,
 	isAfter,
 	isBefore,
 	isSameMonth,
@@ -10,6 +10,7 @@ import {
 	max,
 	min
 } from "date-fns";
+
 import { DateRange, NavigationAction, DefinedRange } from "./types";
 import Menu from "./components/Menu";
 import { defaultRanges } from "./defaults";
@@ -25,8 +26,8 @@ export const MARKERS: { [key: string]: Marker } = {
 const getValidatedMonths = (range: DateRange, minDate: Date, maxDate: Date) => {
 	let { startDate, endDate } = range;
 	if (startDate && endDate) {
-		const newStart = max(startDate, minDate);
-		const newEnd = min(endDate, maxDate);
+		const newStart = max([startDate, minDate]);
+		const newEnd = min([endDate, maxDate]);
 
 		return [newStart, isSameMonth(newStart, newEnd) ? addMonths(newStart, 1) : newEnd];
 	} else {
@@ -89,8 +90,8 @@ const DateRangePickerImpl: React.FunctionComponent<DateRangePickerProps> = props
 	const setDateRangeValidated = (range: DateRange) => {
 		let { startDate: newStart, endDate: newEnd } = range;
 		if (newStart && newEnd) {
-			range.startDate = newStart = max(newStart, minDateValid);
-			range.endDate = newEnd = min(newEnd, maxDateValid);
+			range.startDate = newStart = max([newStart, minDateValid]);
+			range.endDate = newEnd = min([newEnd, maxDateValid]);
 			setDateRange(range);
 			onChange(range);
 			setFirstMonth(newStart);
@@ -133,7 +134,10 @@ const DateRangePickerImpl: React.FunctionComponent<DateRangePickerProps> = props
 			!endDate &&
 			hoverDay &&
 			isAfter(hoverDay, startDate) &&
-			isWithinRange(day, startDate, hoverDay)) as boolean;
+			isWithinInterval(day, {
+				start: startDate,
+				end: hoverDay
+			})) as boolean;
 	};
 
 	const helpers = {
