@@ -41,6 +41,7 @@ interface MenuProps extends WithStyles<typeof styles> {
 	setFirstMonth: Setter<Date>;
 	setSecondMonth: Setter<Date>;
 	setDateRange: Setter<DateRange>;
+	resetDateRage: () => void;
 	helpers: {
 		inHoverRange: (day: Date) => boolean;
 	};
@@ -63,6 +64,7 @@ const Menu: React.FunctionComponent<MenuProps> = props => {
 		secondMonth,
 		setSecondMonth,
 		setDateRange,
+		resetDateRage,
 		helpers,
 		handlers
 	} = props;
@@ -113,6 +115,7 @@ const Menu: React.FunctionComponent<MenuProps> = props => {
 						selectedRange={dateRange}
 						ranges={ranges}
 						setRange={setDateRange}
+						resetRange={resetDateRage}
 					/>
 				</Grid>
 			</Grid>

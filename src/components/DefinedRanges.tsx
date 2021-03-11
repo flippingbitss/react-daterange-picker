@@ -4,6 +4,7 @@ import { DefinedRange, DateRange } from "../types";
 import { isSameDay } from "date-fns";
 
 type DefinedRangesProps = {
+	resetRange: () => void;
 	setRange: (range: DateRange) => void;
 	selectedRange: DateRange;
 	ranges: DefinedRange[];
@@ -36,6 +37,14 @@ const DefinedRanges: React.FunctionComponent<DefinedRangesProps> = props => {
 					</ListItemText>
 				</ListItem>
 			))}
+			<ListItem button onClick={() => props.resetRange()}>
+				<ListItemText
+					primaryTypographyProps={{
+						variant: "body2",
+					}}>
+					Reset Range
+				</ListItemText>
+			</ListItem>
 		</List>
 	);
 };

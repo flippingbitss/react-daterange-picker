@@ -45,7 +45,7 @@ const getDefaultRanges = (date: Date): DefinedRange[] => [
 		label: "Last Month",
 		startDate: startOfMonth(addMonths(date, -1)),
 		endDate: endOfMonth(addMonths(date, -1))
-	}
+	},
 ];
 
 export const defaultRanges = getDefaultRanges(new Date());

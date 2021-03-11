@@ -11,7 +11,7 @@ export enum NavigationAction {
 }
 
 export type DefinedRange = {
-	startDate: Date;
-	endDate: Date;
+	startDate?: Date;
+	endDate?: Date;
 	label: string;
 };
