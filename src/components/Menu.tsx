@@ -89,7 +89,7 @@ const Menu: React.FunctionComponent<MenuProps> = props => {
 						</Grid>
 					</Grid>
 					<Divider />
-					<Grid container direction="row" justify="center" wrap="nowrap">
+					<Grid container direction="row" justify="center" wrap="wrap">
 						<Month
 							{...commonProps}
 							value={firstMonth}
